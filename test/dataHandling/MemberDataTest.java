@@ -1,8 +1,6 @@
 package dataHandling;
 
-import Member.Member;
-import gym.Reception;
-import org.junit.jupiter.api.BeforeAll;
+import member.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class MemberDataTest {
 
     MemberData item = new MemberData();
-    Path memberList = Paths.get("files/members.txt");
+    Path path = Paths.get("files/members.txt");
     List<Member> list = new ArrayList<Member>();
 
     @BeforeEach
     @Test
     public void readMemberData() {
-        try (BufferedReader reader = Files.newBufferedReader(memberList);
+        try (BufferedReader reader = Files.newBufferedReader(path);
              BufferedWriter writer = Files.newBufferedWriter(Paths.get("files/membersIn.txt"))) {
             String content = null;
             String[] IdAndNames = null;
@@ -74,14 +72,14 @@ class MemberDataTest {
         System.out.println("Inside checkMembership");
         System.out.println(list);
 
-        assertEquals("Fritjoff Flacon's membership expired, last pay date is: 1999-12-16",item.checkMembership("7911061234",list));
-        assertEquals("Fritjoff Flacon's membership expired, last pay date is: 1999-12-16",item.checkMembership("Fritjoff Flacon",list));
+        assertEquals("Fritjoff Flacon's membership expired, last pay date is: 1999-12-16",item.checkMembershipForReception("7911061234",list));
+        assertEquals("Fritjoff Flacon's membership expired, last pay date is: 1999-12-16",item.checkMembershipForReception("Fritjoff Flacon",list));
 
-        assertEquals("Mitsuko Mayotte's membership is valid, last pay date is: 2018-12-22",item.checkMembership("Mitsuko Mayotte",list));
-        assertEquals("Mitsuko Mayotte's membership is valid, last pay date is: 2018-12-22",item.checkMembership("7907281234",list));
+        assertEquals("Mitsuko Mayotte's membership is valid, last pay date is: 2018-12-22",item.checkMembershipForReception("Mitsuko Mayotte",list));
+        assertEquals("Mitsuko Mayotte's membership is valid, last pay date is: 2018-12-22",item.checkMembershipForReception("7907281234",list));
 
-        assertEquals("Not member at all",item.checkMembership("X",list));
-        assertEquals("Not member at all",item.checkMembership("3",list));
+        assertEquals("Not member at all",item.checkMembershipForReception("X",list));
+        assertEquals("Not member at all",item.checkMembershipForReception("3",list));
 
 
     }

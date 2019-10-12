@@ -1,9 +1,12 @@
-package Member;
+package member;
+
+import java.util.List;
 
 public class Member {
     private String id;
     private String name;
     private String lastPayDate;
+    private List<String> trainingHistory;
 
     public Member() {
     }
@@ -32,6 +35,10 @@ public class Member {
         return lastPayDate;
     }
 
+    public List<String> getTrainingHistory() {
+        return trainingHistory;
+    }
+
     public void setLastPayDate(String lastPayDate) {
         this.lastPayDate = lastPayDate;
     }
@@ -43,6 +50,8 @@ public class Member {
     public void setName(String name) {
         this.name = name;
     }
+
+
 
     @Override
     public String toString() {

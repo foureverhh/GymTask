@@ -1,12 +1,14 @@
 package dataHandling;
 
-import Member.Member;
+import member.Member;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,7 +16,8 @@ import java.util.List;
 
 public class MemberData {
 
-    final List<Member> memberLists = new ArrayList<>();
+    private final List<Member> memberLists = new ArrayList<>();
+
 
     public  void readAllMemberData(Path filePath) {
         try (BufferedReader reader = Files.newBufferedReader(filePath)) {
@@ -27,9 +30,9 @@ public class MemberData {
                 IdAndNames = content.split(",");
                 id = IdAndNames[0].trim();
                 name = IdAndNames[1].trim();
-                System.out.println("Here is id and name: " + id + " " + name);
+                //System.out.println("Here is id and name: " + id + " " + name);
                 lastPayDate = reader.readLine();
-                System.out.println("Here is lastPayDate: " + lastPayDate);
+                //System.out.println("Here is lastPayDate: " + lastPayDate);
                 Member member = new Member(id,name,lastPayDate);
                 memberLists.add(member);
             }
@@ -46,7 +49,7 @@ public class MemberData {
         return period.getYears() >= 1;
     }
 
-    public String checkMembership(String keyword,List<Member> list){
+    public String checkMembershipForReception(String keyword, List<Member> list){
         String msg ="Not member at all";
         for(Member member:list){
             if(member.getId().equalsIgnoreCase(keyword)||member.getName().equalsIgnoreCase(keyword)){
@@ -62,4 +65,28 @@ public class MemberData {
         return msg;
     }
 
+    public boolean checkMembershipForCoach(String keyword, List<Member> list){
+        boolean isValidMember = false;
+        for(Member member:list){
+            if(member.getId().equalsIgnoreCase(keyword)||member.getName().equalsIgnoreCase(keyword)){
+                if(compareDate(member.getLastPayDate())){
+                    break;
+                }else {
+                    isValidMember = true;
+                    break;
+                }
+            }
+        }
+        return isValidMember;
+    }
+
+ /*   public boolean saveMemberTrainingRecord(String keyword,List<Member> list, Member member){
+        if(checkMembershipForCoach(keyword,list)){
+            LocalDateTime dateTime = LocalDateTime.now();
+            member.getTrainingHistory().add(dateTime.toString());
+        }
+    }*/
+    public List<Member> getMemberLists() {
+        return memberLists;
+    }
 }
