@@ -4,18 +4,22 @@ import dataHandling.MemberData;
 import member.Member;
 
 import javax.swing.*;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class Coach {
 
     private MemberData data= new MemberData();
-    private final Path PATH = Paths.get("files/members.txt");
+    private final Path PATH_FOR_ALL_MEMBERS = Paths.get("files/members.txt");
+    private final String PATH_FOR_MEMBER_TRAINING_HISTORY = "trainingRecords";
 
     public void getPaidMemberTrainingRecord(){
         Member selectedMember = null;
         //Get all data
-        data.readAllMemberData(PATH);
+        data.readAllMemberData(PATH_FOR_ALL_MEMBERS);
         //Get input from JOptionPane
         String input = JOptionPane.showInputDialog(null,"Input name or id,please","Coach",JOptionPane.INFORMATION_MESSAGE);
         while (true){
@@ -32,8 +36,50 @@ public class Coach {
                 input = JOptionPane.showInputDialog("Input can not to be empty! Input a name or an id, please");
                 continue;
             }
+            //To check whether the customer is a valid customer
             selectedMember = data.getSelectedMember(input.trim(), data.getMemberLists());
+
+            //Handle the case the member is valid
             if(selectedMember!=null) {
+                File rootPath = new File(PATH_FOR_MEMBER_TRAINING_HISTORY);
+                System.out.println(selectedMember.getName());
+
+                for(String child : Objects.requireNonNull(rootPath.list())){
+                    //The selectedMember has training history
+                    System.out.println(child.equals(selectedMember.getName()+".txt"));
+                    if(child.equals(selectedMember.getName()+".txt")){
+                        try(ObjectInputStream ois = new ObjectInputStream(
+                                        new FileInputStream(PATH_FOR_MEMBER_TRAINING_HISTORY+"/"+child))){
+                            Object obj = null;
+                            Member memberForCheckTrainingHistory = null;
+                            while ((obj=ois.readObject())!=null) {
+                                memberForCheckTrainingHistory = (Member) obj;
+                            }
+                               // Member memberForCheckTrainingHistory = (Member) ois.readObject();
+                            System.out.println(memberForCheckTrainingHistory);
+                            if(memberForCheckTrainingHistory.getTrainingHistory().isEmpty()){
+                                JOptionPane.showMessageDialog(null,"No training record!");
+                                break;
+                            }else{
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(memberForCheckTrainingHistory.getId()+"\n");
+                                sb.append(memberForCheckTrainingHistory.getName()+"\n");
+                                for(String dateString : memberForCheckTrainingHistory.getTrainingHistory()){
+                                    sb.append(dateString+"\n");
+                                }
+                                JOptionPane.showMessageDialog(null,sb.toString());
+                                break;
+                            }
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                /*
                 if(!selectedMember.getTrainingHistory().isEmpty()){
                     StringBuilder sb = new StringBuilder();
                     sb.append(selectedMember.getId()+"\n");
@@ -45,9 +91,13 @@ public class Coach {
                 } else{
                     JOptionPane.showMessageDialog(null,"No training record!");
                 }
-            }else {
+                */
+            }
+            // Handle not a valid member
+            else {
                 JOptionPane.showMessageDialog(null,"No valid membership!");
             }
+
             input = JOptionPane.showInputDialog("Input a wanted id or name,please");
         }
 

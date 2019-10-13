@@ -71,16 +71,19 @@ class MemberDataTest {
     void checkMembership() {
         System.out.println("Inside checkMembership");
         System.out.println(list);
-
+        //Check keyword as id and name for invalid member
         assertEquals("Fritjoff Flacon's membership expired, last pay date is: 1999-12-16",item.checkMembershipForReception("7911061234",list));
         assertEquals("Fritjoff Flacon's membership expired, last pay date is: 1999-12-16",item.checkMembershipForReception("Fritjoff Flacon",list));
 
+        //Check keyword as id and name for valid member
         assertEquals("Mitsuko Mayotte's membership is valid, last pay date is: 2018-12-22",item.checkMembershipForReception("Mitsuko Mayotte",list));
         assertEquals("Mitsuko Mayotte's membership is valid, last pay date is: 2018-12-22",item.checkMembershipForReception("7907281234",list));
 
+        //Check keyword as id and name for empty name,null, and other names
         assertEquals("Not member at all",item.checkMembershipForReception("X",list));
         assertEquals("Not member at all",item.checkMembershipForReception("3",list));
-
+        assertEquals("Not member at all",item.checkMembershipForReception("",list));
+        assertEquals("Not member at all",item.checkMembershipForReception(null,list));
 
     }
 }

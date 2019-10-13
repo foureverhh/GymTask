@@ -2,8 +2,7 @@ package dataHandling;
 
 import member.Member;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,7 +16,7 @@ import java.util.List;
 public class MemberData {
 
     private final List<Member> memberLists = new ArrayList<>();
-
+    private final static String PATH_FOR_MEMBER_TRAINING_HISTORY = "trainingRecords/";
 
     public  void readAllMemberData(Path filePath) {
         try (BufferedReader reader = Files.newBufferedReader(filePath)) {
@@ -91,5 +90,49 @@ public class MemberData {
     }*/
     public List<Member> getMemberLists() {
         return memberLists;
+    }
+
+    //Add logInTime as Training time to member
+    public static void setTrainingHistoryRecord(Member member){
+        LocalDateTime logInTime = LocalDateTime.now();
+        File memberTrainingFile = new File(PATH_FOR_MEMBER_TRAINING_HISTORY+member.getName()+".txt");
+        if(memberTrainingFile.exists()) {
+            try (
+                    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(memberTrainingFile));
+                    ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(memberTrainingFile))
+            ) {
+                Object obj = null;
+                Member oldRecord = null;
+                while((obj=ois.readObject())!=null){
+                    oldRecord= (Member) obj;
+                }
+                    //Member oldRecord= (Member) ois.readObject();
+                System.out.println(oldRecord+" "+oldRecord.getTrainingHistory());
+                Thread.sleep(500);
+                member.getTrainingHistory().addAll(oldRecord.getTrainingHistory());
+                member.getTrainingHistory().add(logInTime.toString());
+                oos.writeObject(member);
+                oos.flush();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }else{
+            member.getTrainingHistory().add(logInTime.toString());
+            try(ObjectOutputStream oos = new ObjectOutputStream(
+                    new BufferedOutputStream(
+                            new FileOutputStream(memberTrainingFile)))){
+                oos.writeObject(member);
+                oos.writeObject(null);
+                oos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
