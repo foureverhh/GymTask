@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
 
 public class Coach {
@@ -48,14 +49,34 @@ public class Coach {
                     //The selectedMember has training history
                     System.out.println(child.equals(selectedMember.getName()+".txt"));
                     if(child.equals(selectedMember.getName()+".txt")){
-                        try(ObjectInputStream ois = new ObjectInputStream(
+                        try(BufferedReader reader = new BufferedReader(new FileReader(rootPath+"/"+child+".txt"))) {
+                            String name = reader.readLine();
+                            String id = reader.readLine();
+                            String[] dates = reader.readLine().split(" ");
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(id+"\n");
+                            sb.append(name+"\n");
+                            for(String date:dates){
+                                sb.append(date+"\n");
+                            }
+                            JOptionPane.showMessageDialog(null,sb.toString());
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        /*try(ObjectInputStream ois = new ObjectInputStream(
                                         new FileInputStream(PATH_FOR_MEMBER_TRAINING_HISTORY+"/"+child))){
-                            Object obj = null;
+                            *//*Object obj = null;
                             Member memberForCheckTrainingHistory = null;
                             while ((obj=ois.readObject())!=null) {
                                 memberForCheckTrainingHistory = (Member) obj;
-                            }
+                            }*//*
                                // Member memberForCheckTrainingHistory = (Member) ois.readObject();
+                            List<Member> members= (List<Member>) ois.readObject();
+                            Member memberForCheckTrainingHistory = members.get(0);
                             System.out.println(memberForCheckTrainingHistory);
                             if(memberForCheckTrainingHistory.getTrainingHistory().isEmpty()){
                                 JOptionPane.showMessageDialog(null,"No training record!");
@@ -76,7 +97,7 @@ public class Coach {
                             e.printStackTrace();
                         } catch (ClassNotFoundException e) {
                             e.printStackTrace();
-                        }
+                        }*/
                     }
                 }
                 /*

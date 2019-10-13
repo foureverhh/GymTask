@@ -4,10 +4,14 @@ import dataHandling.MemberData;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Member implements Serializable{
@@ -15,7 +19,7 @@ public class Member implements Serializable{
     private String id;
     private String name;
     private String lastPayDate;
-    private List<String> trainingHistory = new ArrayList<>();
+    private List<String> trainingHistory;
     private static MemberData data;
     private static final Path PATH_FOR_ALL_MEMBERS = Paths.get("files/members.txt");
     private final String PATH_FOR_MEMBER_TRAINING_HISTORY = "trainingRecords/";
@@ -32,6 +36,7 @@ public class Member implements Serializable{
         this.id = id;
         this.name = name;
         this.lastPayDate = lastPayDate;
+        this.trainingHistory = new ArrayList<>();
     }
 
 
@@ -74,56 +79,125 @@ public class Member implements Serializable{
         }
         return temp;
     }
-/*
-    //Add logInTime as Training time to member
-    public void setTrainingHistoryRecord(){
-        LocalDateTime logInTime = LocalDateTime.now();
-        File memberTrainingFile = new File(PATH_FOR_MEMBER_TRAINING_HISTORY+this.getName()+".txt");
-        if(memberTrainingFile.exists()) {
-            try (
-                    ObjectInputStream  ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(memberTrainingFile)));
-                    ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(memberTrainingFile)))
-            ) {
-                Member oldRecord= (Member) ois.readObject();
-                System.out.println(oldRecord+" "+oldRecord.getTrainingHistory());
-                Thread.sleep(500);
-                this.getTrainingHistory().addAll(oldRecord.getTrainingHistory());
-                this.getTrainingHistory().add(logInTime.toString());
-                oos.writeObject(this);
-                oos.flush();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+    public void saveTrainingHistoryToMemberFile(){
+        LocalDateTime dateTime = LocalDateTime.now();
+        Path path = Paths.get(PATH_FOR_MEMBER_TRAINING_HISTORY);
+        Path filePath = Paths.get(PATH_FOR_MEMBER_TRAINING_HISTORY+name+".txt");
+        if(!Files.exists(path) || !Files.exists(filePath)){
+           try {
+               if(!Files.exists(path)){
+                   Files.createDirectory(path);
+               }
+               if(!Files.exists(filePath)){
+                   Files.createFile(filePath);
+               }
+               trainingHistory.add(dateTime.toString());
+               try(BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.WRITE)){
+                    writer.write(id+"\n");
+                    writer.write(name+"\n");
+                    for(String date: trainingHistory){
+                        writer.write(date+" ");
+                    }
+                    writer.write("\n");
+                    writer.flush();
+               }
+
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
         }else{
-            this.getTrainingHistory().add(logInTime.toString());
-            try(ObjectOutputStream oos = new ObjectOutputStream(
-                    new BufferedOutputStream(
-                            new FileOutputStream(memberTrainingFile)))){
-                oos.writeObject(this);
-                oos.flush();
+            System.out.println("=================================");
+            System.out.println(path);
+                String content = null;
+                String nameInfo = null;
+                String idInfo = null;
+            try(BufferedReader reader = Files.newBufferedReader(filePath)
+            ){
+                while((content=reader.readLine())!=null){
+                    //System.out.println(content);
+                     nameInfo = content;
+                     System.out.println(nameInfo);
+                     idInfo = reader.readLine();
+                     System.out.println(idInfo);
+                     String[] dateStrings = reader.readLine().split(" ");
+                     for(String string : dateStrings){
+                         trainingHistory.add(string);
+                     }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            trainingHistory.add(dateTime.toString());
+            try(BufferedWriter writer = Files.newBufferedWriter(filePath)){
+                writer.write(nameInfo+"\n");
+                writer.write(idInfo+"\n");
+                for(String date : trainingHistory){
+                    writer.write(date+" ");
+                }
+                writer.write("\n");
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("=================================");
         }
     }
+    public void saveTrainingHistoryToFile(String path) {
+        LocalDateTime dateTime = LocalDateTime.now();
 
-    //OverLoad to take a date string as parameter
-    public void setTrainingHistoryRecord(String dateInString){
-        this.trainingHistory.add(dateInString);
-        String path = "trainingRecords/"+this.name+".txt";
-        try(ObjectOutputStream writer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))){
-            writer.writeObject(this);
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+    }
+    /*
+        //Add logInTime as Training time to member
+        public void setTrainingHistoryRecord(){
+            LocalDateTime logInTime = LocalDateTime.now();
+            File memberTrainingFile = new File(PATH_FOR_MEMBER_TRAINING_HISTORY+this.getName()+".txt");
+            if(memberTrainingFile.exists()) {
+                try (
+                        ObjectInputStream  ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(memberTrainingFile)));
+                        ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(memberTrainingFile)))
+                ) {
+                    Member oldRecord= (Member) ois.readObject();
+                    System.out.println(oldRecord+" "+oldRecord.getTrainingHistory());
+                    Thread.sleep(500);
+                    this.getTrainingHistory().addAll(oldRecord.getTrainingHistory());
+                    this.getTrainingHistory().add(logInTime.toString());
+                    oos.writeObject(this);
+                    oos.flush();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                this.getTrainingHistory().add(logInTime.toString());
+                try(ObjectOutputStream oos = new ObjectOutputStream(
+                        new BufferedOutputStream(
+                                new FileOutputStream(memberTrainingFile)))){
+                    oos.writeObject(this);
+                    oos.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-    }*/
+
+        //OverLoad to take a date string as parameter
+        public void setTrainingHistoryRecord(String dateInString){
+            this.trainingHistory.add(dateInString);
+            String path = "trainingRecords/"+this.name+".txt";
+            try(ObjectOutputStream writer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))){
+                writer.writeObject(this);
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }*/
     @Override
     public String toString() {
         return id+" "+name+" "+lastPayDate;

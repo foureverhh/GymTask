@@ -12,13 +12,16 @@ public class App {
         reception.checkMembership();
         */
 
+        /*
         Member visitingMember = Member.getInstance("Diamanda Djedi");
         MemberData.setTrainingHistoryRecord(visitingMember);
-        /*
         Thread.sleep(1000);
         visitingMember.setTrainingHistoryRecord();
         */
-        Coach coach = new Coach();
-        coach.getPaidMemberTrainingRecord();
+        Member visitingMember = Member.getInstance("Diamanda Djedi");
+        visitingMember.saveTrainingHistoryToMemberFile();
+
+        /*Coach coach = new Coach();
+        coach.getPaidMemberTrainingRecord();*/
     }
 }

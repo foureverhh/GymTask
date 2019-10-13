@@ -101,17 +101,24 @@ public class MemberData {
                     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(memberTrainingFile));
                     ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(memberTrainingFile))
             ) {
+               /*
                 Object obj = null;
                 Member oldRecord = null;
                 while((obj=ois.readObject())!=null){
                     oldRecord= (Member) obj;
                 }
-                    //Member oldRecord= (Member) ois.readObject();
+                */
+                //Member oldRecord= (Member) ois.readObject();
+                List<Member> members = new ArrayList<>();
+                members = (List<Member>) ois.readObject();
+                Member oldRecord = members.get(0);
                 System.out.println(oldRecord+" "+oldRecord.getTrainingHistory());
-                Thread.sleep(500);
+                //Thread.sleep(500);
                 member.getTrainingHistory().addAll(oldRecord.getTrainingHistory());
                 member.getTrainingHistory().add(logInTime.toString());
-                oos.writeObject(member);
+                members.clear();
+                members.add(member);
+                oos.writeObject(members);
                 oos.flush();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -119,15 +126,20 @@ public class MemberData {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }else{
             member.getTrainingHistory().add(logInTime.toString());
+            List<Member> members = new ArrayList<>();
+            members.add(member);
             try(ObjectOutputStream oos = new ObjectOutputStream(
                     new BufferedOutputStream(
                             new FileOutputStream(memberTrainingFile)))){
+                /*
                 oos.writeObject(member);
+                oos.writeObject(null);
+                */
+                //Write Member List instead of member
+                oos.writeObject(members);
                 oos.writeObject(null);
                 oos.flush();
             } catch (IOException e) {
