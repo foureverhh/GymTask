@@ -15,7 +15,7 @@ public class Reception {
         //Get all data
         data.readAllMemberData(path);
         //Get input from JOptionPane
-        String input = JOptionPane.showInputDialog("Input name or id,please");
+        String input = JOptionPane.showInputDialog(null,"Input name or id,please","Reception",JOptionPane.INFORMATION_MESSAGE);
         String result = null;
         while (true){
             if(input == null){
@@ -29,12 +29,13 @@ public class Reception {
             }
             if(input.isEmpty()){
                 input = JOptionPane.showInputDialog("Input can not to be empty! Input a name or an id, please");
+                continue;
             }
-            if(input!=null) {
+            //if(input!=null & !input.isEmpty()) {
                 result = data.checkMembershipForReception(input.trim(), data.getMemberLists());
                 JOptionPane.showMessageDialog(null,result);
                 input = JOptionPane.showInputDialog("Input name or id for next check!");
-            }
+            //}
         }
     }
 }

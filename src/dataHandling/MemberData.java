@@ -49,6 +49,7 @@ public class MemberData {
         return period.getYears() >= 1;
     }
 
+    //To check valid client for receptionist
     public String checkMembershipForReception(String keyword, List<Member> list){
         String msg ="Not member at all";
         for(Member member:list){
@@ -65,20 +66,22 @@ public class MemberData {
         return msg;
     }
 
-    public boolean checkMembershipForCoach(String keyword, List<Member> list){
-        boolean isValidMember = false;
+    //To check paid client for coach
+    public Member checkMembershipForCoach(String keyword, List<Member> list){
+        Member selectedMember = null;
         for(Member member:list){
             if(member.getId().equalsIgnoreCase(keyword)||member.getName().equalsIgnoreCase(keyword)){
                 if(compareDate(member.getLastPayDate())){
                     break;
                 }else {
-                    isValidMember = true;
+                   selectedMember = member;
                     break;
                 }
             }
         }
-        return isValidMember;
+        return selectedMember;
     }
+
 
  /*   public boolean saveMemberTrainingRecord(String keyword,List<Member> list, Member member){
         if(checkMembershipForCoach(keyword,list)){

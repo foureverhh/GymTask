@@ -1,12 +1,19 @@
 package member;
 
+import com.sun.corba.se.impl.orbutil.ObjectWriter;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Member {
+public class Member implements Serializable{
     private String id;
     private String name;
     private String lastPayDate;
-    private List<String> trainingHistory;
+    private List<String> trainingHistory = new ArrayList<>();
 
     public Member() {
     }
@@ -51,6 +58,16 @@ public class Member {
         this.name = name;
     }
 
+    public void setTrainingHistoryRecord(String dateString){
+        this.trainingHistory.add(dateString);
+        String path = "trainingRecords"+this.name+".txt";
+        try(ObjectOutputStream writer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))){
+            writer.writeObject(this);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @Override
