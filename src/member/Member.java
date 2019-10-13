@@ -1,9 +1,9 @@
 package member;
 
-import com.sun.corba.se.impl.orbutil.ObjectWriter;
+import dataHandling.MemberData;
 
+import javax.swing.*;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,6 +14,8 @@ public class Member implements Serializable{
     private String name;
     private String lastPayDate;
     private List<String> trainingHistory = new ArrayList<>();
+    private static MemberData data;
+    private static final Path PATH = Paths.get("files/members.txt");
 
     public Member() {
     }
@@ -69,6 +71,16 @@ public class Member implements Serializable{
         }
     }
 
+    //Get a member instance,Only paid member can get instance by calling getSelectedMember()
+    public static Member getInstance(String keyword){
+        data = new MemberData();
+        data.readAllMemberData(PATH);
+        Member temp = data.getSelectedMember(keyword,data.getMemberLists());
+        if(temp==null){
+            JOptionPane.showMessageDialog(null,"We get an invalid member here!!","Invalid Visit",JOptionPane.WARNING_MESSAGE);
+        }
+        return temp;
+    }
 
     @Override
     public String toString() {

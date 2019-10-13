@@ -10,12 +10,12 @@ import java.nio.file.Paths;
 public class Coach {
 
     private MemberData data= new MemberData();
-    private Path path = Paths.get("files/members.txt");
+    private final Path PATH = Paths.get("files/members.txt");
 
     public void getPaidMemberTrainingRecord(){
         Member selectedMember = null;
         //Get all data
-        data.readAllMemberData(path);
+        data.readAllMemberData(PATH);
         //Get input from JOptionPane
         String input = JOptionPane.showInputDialog(null,"Input name or id,please","Coach",JOptionPane.INFORMATION_MESSAGE);
         while (true){
@@ -32,10 +32,12 @@ public class Coach {
                 input = JOptionPane.showInputDialog("Input can not to be empty! Input a name or an id, please");
                 continue;
             }
-            selectedMember = data.checkMembershipForCoach(input.trim(), data.getMemberLists());
+            selectedMember = data.getSelectedMember(input.trim(), data.getMemberLists());
             if(selectedMember!=null) {
                 if(!selectedMember.getTrainingHistory().isEmpty()){
                     StringBuilder sb = new StringBuilder();
+                    sb.append(selectedMember.getId()+"\n");
+                    sb.append(selectedMember.getName()+"\n");
                     for(String dateString : selectedMember.getTrainingHistory()){
                         sb.append(dateString+"\n");
                     }

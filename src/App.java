@@ -8,7 +8,9 @@ public class App {
         Reception reception = new Reception();
         reception.checkMembership();
         */
-        Coach coach = new Coach();
-        coach.getPaidMemberTrainingRecord();
+        Member visiting = Member.getInstance("Chamade Coriola");
+
+        /*Coach coach = new Coach();
+        coach.getPaidMemberTrainingRecord();*/
     }
 }

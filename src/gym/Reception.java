@@ -9,11 +9,11 @@ import java.nio.file.Paths;
 public class Reception {
 
     private MemberData data = new MemberData();
-    private Path path = Paths.get("files/members.txt");
+    private final Path PATH = Paths.get("files/members.txt");
 
     public void checkMembership(){
         //Get all data
-        data.readAllMemberData(path);
+        data.readAllMemberData(PATH);
         //Get input from JOptionPane
         String input = JOptionPane.showInputDialog(null,"Input name or id,please","Reception",JOptionPane.INFORMATION_MESSAGE);
         String result = null;

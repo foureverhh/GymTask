@@ -67,7 +67,7 @@ public class MemberData {
     }
 
     //To check paid client for coach
-    public Member checkMembershipForCoach(String keyword, List<Member> list){
+    public Member getSelectedMember(String keyword, List<Member> list){
         Member selectedMember = null;
         for(Member member:list){
             if(member.getId().equalsIgnoreCase(keyword)||member.getName().equalsIgnoreCase(keyword)){
