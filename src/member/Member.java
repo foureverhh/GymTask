@@ -1,6 +1,7 @@
 package member;
 
 import dataHandling.MemberData;
+import utils.Inquiry;
 
 import javax.swing.*;
 import java.io.*;
@@ -21,6 +22,9 @@ public class Member implements Serializable{
     private static MemberData data;
     private static final Path PATH_FOR_ALL_MEMBERS = Paths.get("files/members.txt");
     private final String PATH_FOR_MEMBER_TRAINING_HISTORY = "trainingRecords/";
+    private final Path SERIALIZE_DIR = Paths.get("trainingRecordSer");
+    private final Path SERIALIZE_FILE = Paths.get("trainingRecordSer");
+
 
     public Member(String id, String name, String lastPayDate) {
         this.id = id;
@@ -59,6 +63,12 @@ public class Member implements Serializable{
     }
 
 
+    public static void MemberVisiting(String idOrName){
+        Member member = getInstance(idOrName);
+        if(member!=null)
+            member.saveTrainingHistoryToMemberFileWithBufferedWriter();
+        Inquiry.userInquiry();
+    }
     //Get a member instance,Only paid member can get instance by calling getSelectedMember()
     public static Member getInstance(String keyword){
         data = new MemberData();
@@ -133,53 +143,9 @@ public class Member implements Serializable{
 
         }
     }
-    public void saveTrainingHistoryToFile(String path) {
-        LocalDateTime dateTime = LocalDateTime.now();
 
-    }
-    /*
-        //Add logInTime as Training time to member
-        public void setTrainingHistoryRecord(){
-            LocalDateTime logInTime = LocalDateTime.now();
-            File memberTrainingFile = new File(PATH_FOR_MEMBER_TRAINING_HISTORY+this.getName()+".txt");
-            if(memberTrainingFile.exists()) {
-                try (
-                        ObjectInputStream  ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(memberTrainingFile)));
-                        ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(memberTrainingFile)))
-                ) {
-                    Member oldRecord= (Member) ois.readObject();
-                    System.out.println(oldRecord+" "+oldRecord.getTrainingHistory());
-                    Thread.sleep(500);
-                    this.getTrainingHistory().addAll(oldRecord.getTrainingHistory());
-                    this.getTrainingHistory().add(logInTime.toString());
-                    oos.writeObject(this);
-                    oos.flush();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }else{
-                this.getTrainingHistory().add(logInTime.toString());
-                try(ObjectOutputStream oos = new ObjectOutputStream(
-                        new BufferedOutputStream(
-                                new FileOutputStream(memberTrainingFile)))){
-                    oos.writeObject(this);
-                    oos.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-     */
-
-        //OverLoad to take a date string as parameter
-        public void setTrainingHistoryRecord(String dateInString){
+    //OverLoad to take a date string as parameter
+    public void setTrainingHistoryRecord(String dateInString){
             this.trainingHistory.add(dateInString);
             String path = "trainingRecords/"+this.name+".txt";
             try(ObjectOutputStream writer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(path)))){
@@ -188,7 +154,11 @@ public class Member implements Serializable{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+    }
+
+    public void saveTrainingHistoryToMemberFileWithObjectOutputStream(){
+
+    }
 
     @Override
     public String toString() {
