@@ -1,9 +1,5 @@
-import dataHandling.MemberData;
 import gym.Coach;
-import gym.Reception;
 import member.Member;
-
-import java.time.LocalDateTime;
 
 public class App {
     public static void main(String[] args) throws InterruptedException {
@@ -19,9 +15,9 @@ public class App {
         visitingMember.setTrainingHistoryRecord();
         */
         Member visitingMember = Member.getInstance("Diamanda Djedi");
-        visitingMember.saveTrainingHistoryToMemberFile();
+        visitingMember.saveTrainingHistoryToMemberFileWithBufferedWriter();
 
-        /*Coach coach = new Coach();
-        coach.getPaidMemberTrainingRecord();*/
+        Coach coach = new Coach();
+        coach.getPaidMemberTrainingRecordWithBufferedReader();
     }
 }

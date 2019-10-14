@@ -80,10 +80,10 @@ public class Member implements Serializable{
         return temp;
     }
 
-    public void saveTrainingHistoryToMemberFile(){
+    public void saveTrainingHistoryToMemberFileWithBufferedWriter(){
         LocalDateTime dateTime = LocalDateTime.now();
         Path path = Paths.get(PATH_FOR_MEMBER_TRAINING_HISTORY);
-        Path filePath = Paths.get(PATH_FOR_MEMBER_TRAINING_HISTORY+name+".txt");
+        Path filePath = Paths.get(PATH_FOR_MEMBER_TRAINING_HISTORY+name+" "+id+".txt");
         if(!Files.exists(path) || !Files.exists(filePath)){
            try {
                if(!Files.exists(path)){
@@ -107,7 +107,7 @@ public class Member implements Serializable{
                e.printStackTrace();
            }
         }else{
-            System.out.println("=================================");
+
             System.out.println(path);
                 String content = null;
                 String nameInfo = null;
@@ -115,7 +115,6 @@ public class Member implements Serializable{
             try(BufferedReader reader = Files.newBufferedReader(filePath)
             ){
                 while((content=reader.readLine())!=null){
-                    //System.out.println(content);
                      nameInfo = content;
                      System.out.println(nameInfo);
                      idInfo = reader.readLine();
@@ -141,7 +140,7 @@ public class Member implements Serializable{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("=================================");
+
         }
     }
     public void saveTrainingHistoryToFile(String path) {
@@ -187,6 +186,8 @@ public class Member implements Serializable{
             }
         }
 
+     */
+
         //OverLoad to take a date string as parameter
         public void setTrainingHistoryRecord(String dateInString){
             this.trainingHistory.add(dateInString);
@@ -197,7 +198,8 @@ public class Member implements Serializable{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }*/
+        }
+
     @Override
     public String toString() {
         return id+" "+name+" "+lastPayDate;

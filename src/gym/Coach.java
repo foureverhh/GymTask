@@ -17,7 +17,7 @@ public class Coach {
     private final Path PATH_FOR_ALL_MEMBERS = Paths.get("files/members.txt");
     private final String PATH_FOR_MEMBER_TRAINING_HISTORY = "trainingRecords";
 
-    public void getPaidMemberTrainingRecord(){
+    public void getPaidMemberTrainingRecordWithBufferedReader(){
         Member selectedMember = null;
         //Get all data
         data.readAllMemberData(PATH_FOR_ALL_MEMBERS);
@@ -45,11 +45,12 @@ public class Coach {
                 File rootPath = new File(PATH_FOR_MEMBER_TRAINING_HISTORY);
                 System.out.println(selectedMember.getName());
 
-                for(String child : Objects.requireNonNull(rootPath.list())){
+                for(String child : rootPath.list()){
                     //The selectedMember has training history
-                    System.out.println(child.equals(selectedMember.getName()+".txt"));
-                    if(child.equals(selectedMember.getName()+".txt")){
-                        try(BufferedReader reader = new BufferedReader(new FileReader(rootPath+"/"+child+".txt"))) {
+                    System.out.println("Child is: "+child);
+                    System.out.println(child.equals(selectedMember.getName()+" "+selectedMember.getId()+".txt"));
+                    if(child.equals(selectedMember.getName()+" "+selectedMember.getId()+".txt")){
+                        try(BufferedReader reader = new BufferedReader(new FileReader(rootPath+"/"+child))) {
                             String name = reader.readLine();
                             String id = reader.readLine();
                             String[] dates = reader.readLine().split(" ");
