@@ -9,9 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Member implements Serializable{
@@ -23,14 +21,6 @@ public class Member implements Serializable{
     private static MemberData data;
     private static final Path PATH_FOR_ALL_MEMBERS = Paths.get("files/members.txt");
     private final String PATH_FOR_MEMBER_TRAINING_HISTORY = "trainingRecords/";
-
-    public Member() {
-    }
-
-    public Member(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     public Member(String id, String name, String lastPayDate) {
         this.id = id;
@@ -73,7 +63,7 @@ public class Member implements Serializable{
     public static Member getInstance(String keyword){
         data = new MemberData();
         data.readAllMemberData(PATH_FOR_ALL_MEMBERS);
-        Member temp = data.getSelectedMember(keyword,data.getMemberLists());
+        Member temp = data.getSelectedMemberForCoach(keyword,data.getMemberLists());
         if(temp==null){
             JOptionPane.showMessageDialog(null,"We get an invalid member here!!","Invalid Visit",JOptionPane.WARNING_MESSAGE);
         }

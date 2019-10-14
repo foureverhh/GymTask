@@ -16,7 +16,6 @@ import java.util.List;
 public class MemberData {
 
     private final List<Member> memberLists = new ArrayList<>();
-    private final static String PATH_FOR_MEMBER_TRAINING_HISTORY = "trainingRecords/";
 
     public  void readAllMemberData(Path filePath) {
         try (BufferedReader reader = Files.newBufferedReader(filePath)) {
@@ -29,9 +28,7 @@ public class MemberData {
                 IdAndNames = content.split(",");
                 id = IdAndNames[0].trim();
                 name = IdAndNames[1].trim();
-                //System.out.println("Here is id and name: " + id + " " + name);
                 lastPayDate = reader.readLine();
-                //System.out.println("Here is lastPayDate: " + lastPayDate);
                 Member member = new Member(id,name,lastPayDate);
                 memberLists.add(member);
             }
@@ -66,7 +63,7 @@ public class MemberData {
     }
 
     //To check paid client for coach
-    public Member getSelectedMember(String keyword, List<Member> list){
+    public Member getSelectedMemberForCoach(String keyword, List<Member> list){
         Member selectedMember = null;
         for(Member member:list){
             if(member.getId().equalsIgnoreCase(keyword)||member.getName().equalsIgnoreCase(keyword)){
@@ -81,70 +78,8 @@ public class MemberData {
         return selectedMember;
     }
 
-
- /*   public boolean saveMemberTrainingRecord(String keyword,List<Member> list, Member member){
-        if(checkMembershipForCoach(keyword,list)){
-            LocalDateTime dateTime = LocalDateTime.now();
-            member.getTrainingHistory().add(dateTime.toString());
-        }
-    }*/
     public List<Member> getMemberLists() {
         return memberLists;
     }
 
-    //Add logInTime as Training time to member
-    public static void setTrainingHistoryRecord(Member member){
-        LocalDateTime logInTime = LocalDateTime.now();
-        File memberTrainingFile = new File(PATH_FOR_MEMBER_TRAINING_HISTORY+member.getName()+".txt");
-        if(memberTrainingFile.exists()) {
-            try (
-                    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(memberTrainingFile));
-                    ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(memberTrainingFile))
-            ) {
-               /*
-                Object obj = null;
-                Member oldRecord = null;
-                while((obj=ois.readObject())!=null){
-                    oldRecord= (Member) obj;
-                }
-                */
-                //Member oldRecord= (Member) ois.readObject();
-                List<Member> members = new ArrayList<>();
-                members = (List<Member>) ois.readObject();
-                Member oldRecord = members.get(0);
-                System.out.println(oldRecord+" "+oldRecord.getTrainingHistory());
-                //Thread.sleep(500);
-                member.getTrainingHistory().addAll(oldRecord.getTrainingHistory());
-                member.getTrainingHistory().add(logInTime.toString());
-                members.clear();
-                members.add(member);
-                oos.writeObject(members);
-                oos.flush();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }else{
-            member.getTrainingHistory().add(logInTime.toString());
-            List<Member> members = new ArrayList<>();
-            members.add(member);
-            try(ObjectOutputStream oos = new ObjectOutputStream(
-                    new BufferedOutputStream(
-                            new FileOutputStream(memberTrainingFile)))){
-                /*
-                oos.writeObject(member);
-                oos.writeObject(null);
-                */
-                //Write Member List instead of member
-                oos.writeObject(members);
-                oos.writeObject(null);
-                oos.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
