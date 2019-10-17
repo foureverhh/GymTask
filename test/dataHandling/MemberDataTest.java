@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,17 +62,21 @@ class MemberDataTest {
 
     @Test
     void compareDate() {
-        assertTrue(item.compareDate("2018-07-01"));
-        assertFalse(item.compareDate("2018-12-02"));
+        LocalDate dateOverOneYear = LocalDate.now().minusYears(1);
+        LocalDate dateLessOneYear = LocalDate.now().plusYears(1);
+        System.out.println(dateOverOneYear.toString());
+        System.out.println(dateLessOneYear.toString());
+        assertFalse(item.compareDate(dateLessOneYear.toString()));
+        assertTrue(item.compareDate(dateOverOneYear.toString()));
+        /*
         assertTrue(item.compareDate("2018-10-12"));
         assertTrue(item.compareDate("1999-12-16"));
         assertFalse(item.compareDate("2018-12-22"));
+        */
     }
 
     @Test
     void checkMembership() {
-        System.out.println("Inside checkMembership");
-        System.out.println(list);
         //Check keyword as id and name for invalid member
         assertEquals("Fritjoff Flacon's membership expired, last pay date is: 1999-12-16",item.checkMembershipForReception("7911061234",list));
         assertEquals("Fritjoff Flacon's membership expired, last pay date is: 1999-12-16",item.checkMembershipForReception("Fritjoff Flacon",list));

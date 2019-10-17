@@ -48,7 +48,7 @@ class MemberTest {
         try(ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(Paths.get(SERIALIZE_DIR+m1.getName()+" "+m1.getId()+".txt")))) {
             Member member = (Member) ois.readObject();
             //assertEquals(1,member.getTrainingHistory().size());
-            assertEquals(2,member.getTrainingHistory().size());
+            assertEquals(1,member.getTrainingHistory().size());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -7,7 +7,7 @@ import utils.Inquiry;
 public class App {
     public static void main(String[] args) throws InterruptedException {
 
-        Member.MemberVisiting("Nahema Ninsson");
+        Member.MemberVisiting("8104021234");
         Inquiry.userInquiry();
 
 
